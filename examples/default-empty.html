@@ -1,0 +1,15 @@
+<div id="mount-point"></div>
+
+<script type="module">
+    import {StarboardNotebookIFrame} from "../dist/notebook-sandbox.js"
+    const mount = document.querySelector("#mount-point");
+
+    const el = new StarboardNotebookIFrame({
+        notebookContent: "",
+        src: "https://unpkg.com/starboard-notebook@latest/dist/index.html"
+    });
+
+    el.style.width = "100%";
+    mount.appendChild(el);    
+   
+</script>
