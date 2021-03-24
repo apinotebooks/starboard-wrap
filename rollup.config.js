@@ -9,7 +9,7 @@ const pkg = require("./package.json");
 export default {
   input: `src/index.ts`,
   output: [
-    {file: 'dist/index.js', format: 'es'},
+    {file: 'dist/notebook-sandbox.js', format: 'es'},
     {file: 'dist/index.min.js', format: 'es', plugins: [terser()]},
     {file: 'dist/index.cjs', format: 'cjs'},
     {file: 'dist/index.iife.js', format: 'iife', name: "starboardWrap"}
