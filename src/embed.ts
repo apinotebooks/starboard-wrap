@@ -14,6 +14,7 @@ export type StarboardNotebookIFrameOptions<ReceivedMessageType = OutboundNoteboo
     inPageLinks: boolean;
 
     notebookContent?: Promise<string> | string;
+    notebookContainer?: object;
 
     onNotebookReadySignalMessage(payload: ReadySignalMessage['payload']): void;
     onSaveMessage(payload: SaveMessage['payload']): void;
@@ -40,7 +41,8 @@ function loadDefaultSettings(opts: Partial<StarboardNotebookIFrameOptions>, el: 
         onContentUpdateMessage: opts.onContentUpdateMessage ?? function(){},
         onSaveMessage: opts.onSaveMessage ?? function(){},
         onMessage: opts.onMessage ?? function(){},
-        notebookContent: opts.notebookContent
+        notebookContent: opts.notebookContent,
+        notebookContainer: opts.notebookContainer
     }
 } 
 

@@ -4,6 +4,7 @@ export declare type StarboardNotebookIFrameOptions<ReceivedMessageType = Outboun
     autoResize: boolean;
     inPageLinks: boolean;
     notebookContent?: Promise<string> | string;
+    notebookContainer?: object;
     onNotebookReadySignalMessage(payload: ReadySignalMessage['payload']): void;
     onSaveMessage(payload: SaveMessage['payload']): void;
     onContentUpdateMessage(payload: ContentUpdateMessage['payload']): void;
