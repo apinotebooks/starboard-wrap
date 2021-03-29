@@ -1494,6 +1494,7 @@ class StarboardNotebookIFrame extends HTMLIFrameElement {
                 if (msg.type === "NOTEBOOK_READY_SIGNAL") {
                     if (this.options.notebookContent) {
                         const content = await this.options.notebookContent;
+                        this.notebookContent = content;
                         this.sendMessage({
                             type: "NOTEBOOK_SET_INIT_DATA", payload: { content }
                         });

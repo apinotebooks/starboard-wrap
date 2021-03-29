@@ -80,8 +80,9 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
             onMessage: async (data: {iframe: any, message: OutboundNotebookMessage}) => {
                 const msg = data.message;
                 if (msg.type === "NOTEBOOK_READY_SIGNAL") {
-                    if (this.options!.notebookContent) {
+                    if (this.options!.notebookContent) {                        
                         const content = await this.options!.notebookContent;
+                        this.notebookContent = content;
                         this.sendMessage({
                             type: "NOTEBOOK_SET_INIT_DATA", payload: {content}
                         });
