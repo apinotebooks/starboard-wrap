@@ -13,7 +13,7 @@ export type StarboardNotebookIFrameOptions<ReceivedMessageType = OutboundNoteboo
     autoResize: boolean;
     inPageLinks: boolean;
 
-    notebookContent?: Promise<string> | string;
+    notebookContent?: string;
     notebookContainer?: object;
 
     onNotebookReadySignalMessage(payload: ReadySignalMessage['payload']): void;
@@ -71,6 +71,7 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
         this.sandbox.value = this.options.sandbox;
         this.src = this.options.src;
         this.frameBorder = "0";
+        this.notebookContent = this.options!.notebookContent || "";
 
         iFrameResizer({
             autoResize: this.options.autoResize, 
@@ -80,9 +81,8 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
             onMessage: async (data: {iframe: any, message: OutboundNotebookMessage}) => {
                 const msg = data.message;
                 if (msg.type === "NOTEBOOK_READY_SIGNAL") {
-                    if (this.options!.notebookContent) {                        
-                        const content = await this.options!.notebookContent;
-                        this.notebookContent = content;
+                    if (this.notebookContent) {                        
+                        const content = await this.notebookContent;                        
                         this.sendMessage({
                             type: "NOTEBOOK_SET_INIT_DATA", payload: {content}
                         });
