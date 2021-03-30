@@ -1472,10 +1472,16 @@ var starboardWrap = (function (exports) {
 	class StarboardNotebookIFrame extends HTMLIFrameElement {
 	    constructor(opts = {}) {
 	        super();
-	        this.notebookContent = "";
 	        // The version of starboard-wrap
 	        this.version = "0.2.3";
+	        this._notebookContent = "";
 	        this.constructorOptions = opts;
+	    }
+	    get notebookContent() {
+	        return this._notebookContent;
+	    }
+	    set notebookContent(content) {
+	        this._notebookContent = content;
 	    }
 	    connectedCallback() {
 	        this.options = loadDefaultSettings(this.constructorOptions, this);
@@ -1483,6 +1489,7 @@ var starboardWrap = (function (exports) {
 	        this.sandbox.value = this.options.sandbox;
 	        this.src = this.options.src;
 	        this.frameBorder = "0";
+	        this.notebookContent = this.options.notebookContent || "";
 	        iframeResizer({
 	            autoResize: this.options.autoResize,
 	            inPageLinks: this.options.inPageLinks,
@@ -1491,9 +1498,8 @@ var starboardWrap = (function (exports) {
 	            onMessage: async (data) => {
 	                const msg = data.message;
 	                if (msg.type === "NOTEBOOK_READY_SIGNAL") {
-	                    if (this.options.notebookContent) {
-	                        const content = await this.options.notebookContent;
-	                        this.notebookContent = content;
+	                    if (this.notebookContent) {
+	                        const content = this.notebookContent;
 	                        this.sendMessage({
 	                            type: "NOTEBOOK_SET_INIT_DATA", payload: { content }
 	                        });

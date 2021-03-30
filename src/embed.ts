@@ -49,7 +49,14 @@ function loadDefaultSettings(opts: Partial<StarboardNotebookIFrameOptions>, el: 
 export class StarboardNotebookIFrame extends HTMLIFrameElement {
     private options?: StarboardNotebookIFrameOptions;
     private constructorOptions: Partial<StarboardNotebookIFrameOptions>;
-    public notebookContent: string = "";
+    private _notebookContent: string;
+    public get notebookContent() {
+        return this._notebookContent;
+    }
+
+    public set notebookContent(content: string) {            
+        this._notebookContent = content;
+    }
 
     // The version of starboard-wrap
     public version: string = "__STARBOARD_WRAP_VERSION__";
@@ -61,6 +68,7 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
 
     constructor(opts: Partial<StarboardNotebookIFrameOptions> = {}) {
         super();
+        this._notebookContent = "";
         this.constructorOptions = opts;
     }
 
@@ -80,20 +88,20 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
             log: this.options.debug,
             onMessage: async (data: {iframe: any, message: OutboundNotebookMessage}) => {
                 const msg = data.message;
-                if (msg.type === "NOTEBOOK_READY_SIGNAL") {
+                if (msg.type === "NOTEBOOK_READY_SIGNAL") {                   
                     if (this.notebookContent) {                        
-                        const content = await this.notebookContent;                        
+                        const content = this.notebookContent;                                                
                         this.sendMessage({
                             type: "NOTEBOOK_SET_INIT_DATA", payload: {content}
                         });
-                    } else {
+                    } else {                        
                         this.notebookContent = msg.payload.content;
                     }
                     this.options!.onNotebookReadySignalMessage(msg.payload);
-                } else if (msg.type === "NOTEBOOK_CONTENT_UPDATE") {
+                } else if (msg.type === "NOTEBOOK_CONTENT_UPDATE") {                    
                     this.notebookContent = msg.payload.content;
                     this.options!.onContentUpdateMessage(msg.payload);
-                } else if (msg.type === "NOTEBOOK_SAVE_REQUEST") {
+                } else if (msg.type === "NOTEBOOK_SAVE_REQUEST") {                    
                     this.notebookContent = msg.payload.content;
                     this.options!.onSaveMessage(msg.payload);
                 }

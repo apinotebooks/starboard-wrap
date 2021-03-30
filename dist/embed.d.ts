@@ -3,7 +3,7 @@ export declare type StarboardNotebookIFrameOptions<ReceivedMessageType = Outboun
     src: string;
     autoResize: boolean;
     inPageLinks: boolean;
-    notebookContent?: Promise<string> | string;
+    notebookContent?: string;
     notebookContainer?: object;
     onNotebookReadySignalMessage(payload: ReadySignalMessage['payload']): void;
     onSaveMessage(payload: SaveMessage['payload']): void;
@@ -18,7 +18,9 @@ export declare type StarboardNotebookMessage = {
 export declare class StarboardNotebookIFrame extends HTMLIFrameElement {
     private options?;
     private constructorOptions;
-    notebookContent: string;
+    private _notebookContent;
+    get notebookContent(): string;
+    set notebookContent(content: string);
     version: string;
     /**
      * This is set automatically by iframeResizer.
