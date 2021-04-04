@@ -1467,7 +1467,8 @@ function loadDefaultSettings(opts, el) {
         onSaveMessage: (_k = opts.onSaveMessage) !== null && _k !== void 0 ? _k : function () { },
         onMessage: (_l = opts.onMessage) !== null && _l !== void 0 ? _l : function () { },
         notebookContent: opts.notebookContent,
-        notebookContainer: opts.notebookContainer
+        notebookContainer: opts.notebookContainer,
+        notebookVariables: opts.notebookVariables
     };
 }
 class StarboardNotebookIFrame extends HTMLIFrameElement {
@@ -1491,6 +1492,7 @@ class StarboardNotebookIFrame extends HTMLIFrameElement {
         this.src = this.options.src;
         this.frameBorder = "0";
         this.notebookContent = this.options.notebookContent || "";
+        this.notebookVariables = this.options.notebookVariables || {};
         iframeResizer({
             autoResize: this.options.autoResize,
             inPageLinks: this.options.inPageLinks,
@@ -1501,8 +1503,9 @@ class StarboardNotebookIFrame extends HTMLIFrameElement {
                 if (msg.type === "NOTEBOOK_READY_SIGNAL") {
                     if (this.notebookContent) {
                         const content = this.notebookContent;
+                        const variables = this.notebookVariables;
                         this.sendMessage({
-                            type: "NOTEBOOK_SET_INIT_DATA", payload: { content }
+                            type: "NOTEBOOK_SET_INIT_DATA", payload: { content: content, variables: variables }
                         });
                     }
                     else {

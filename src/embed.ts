@@ -5,7 +5,7 @@
 // @ts-ignore - no types available for iframe-resizer
 import {default as iFrameResizer} from "iframe-resizer/js/iframeResizer";
 
-import {ContentUpdateMessage, InboundNotebookMessage, NotebookMessage, OutboundNotebookMessage, ReadySignalMessage, SaveMessage} from "starboard-notebook/dist/src/messages/types"
+import {ContentUpdateMessage, InboundNotebookMessage, NotebookMessage, OutboundNotebookMessage, ReadySignalMessage, SaveMessage} from "../messages/types"
 
 export type StarboardNotebookIFrameOptions<ReceivedMessageType = OutboundNotebookMessage> = {
     src: string;
@@ -15,6 +15,7 @@ export type StarboardNotebookIFrameOptions<ReceivedMessageType = OutboundNoteboo
 
     notebookContent?: string;
     notebookContainer?: object;
+    notebookVariables?: any;
 
     onNotebookReadySignalMessage(payload: ReadySignalMessage['payload']): void;
     onSaveMessage(payload: SaveMessage['payload']): void;
@@ -42,13 +43,15 @@ function loadDefaultSettings(opts: Partial<StarboardNotebookIFrameOptions>, el: 
         onSaveMessage: opts.onSaveMessage ?? function(){},
         onMessage: opts.onMessage ?? function(){},
         notebookContent: opts.notebookContent,
-        notebookContainer: opts.notebookContainer
+        notebookContainer: opts.notebookContainer,
+        notebookVariables: opts.notebookVariables
     }
 } 
 
 export class StarboardNotebookIFrame extends HTMLIFrameElement {
     private options?: StarboardNotebookIFrameOptions;
     private constructorOptions: Partial<StarboardNotebookIFrameOptions>;
+    private notebookVariables?: any;
     private _notebookContent: string;
     public get notebookContent() {
         return this._notebookContent;
@@ -80,6 +83,7 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
         this.src = this.options.src;
         this.frameBorder = "0";
         this.notebookContent = this.options!.notebookContent || "";
+        this.notebookVariables = this.options!.notebookVariables || {};
 
         iFrameResizer({
             autoResize: this.options.autoResize, 
@@ -90,9 +94,10 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
                 const msg = data.message;
                 if (msg.type === "NOTEBOOK_READY_SIGNAL") {                   
                     if (this.notebookContent) {                        
-                        const content = this.notebookContent;                                                
+                        const content = this.notebookContent;       
+                        const variables = this.notebookVariables;                                         
                         this.sendMessage({
-                            type: "NOTEBOOK_SET_INIT_DATA", payload: {content}
+                            type: "NOTEBOOK_SET_INIT_DATA", payload: {content: content, variables: variables}
                         });
                     } else {                        
                         this.notebookContent = msg.payload.content;
