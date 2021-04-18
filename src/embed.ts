@@ -16,6 +16,7 @@ export type StarboardNotebookIFrameOptions<ReceivedMessageType = OutboundNoteboo
     notebookContent?: string;
     notebookContainer?: object;
     notebookVariables?: any;
+    notebookEditMode?: string;
 
     onNotebookReadySignalMessage(payload: ReadySignalMessage['payload']): void;
     onSaveMessage(payload: SaveMessage['payload']): void;
@@ -44,7 +45,8 @@ function loadDefaultSettings(opts: Partial<StarboardNotebookIFrameOptions>, el: 
         onMessage: opts.onMessage ?? function(){},
         notebookContent: opts.notebookContent,
         notebookContainer: opts.notebookContainer,
-        notebookVariables: opts.notebookVariables
+        notebookVariables: opts.notebookVariables,
+        notebookEditMode: opts.notebookEditMode || "edit"
     }
 } 
 
@@ -52,6 +54,7 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
     private options?: StarboardNotebookIFrameOptions;
     private constructorOptions: Partial<StarboardNotebookIFrameOptions>;
     private notebookVariables?: any;
+    private notebookEditMode: string = "edit";
     private _notebookContent: string;
     public get notebookContent() {
         return this._notebookContent;
@@ -84,6 +87,7 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
         this.frameBorder = "0";
         this.notebookContent = this.options!.notebookContent || "";
         this.notebookVariables = this.options!.notebookVariables || {};
+        this.notebookEditMode = this.options!.notebookEditMode || "edit";
 
         iFrameResizer({
             autoResize: this.options.autoResize, 
@@ -97,7 +101,7 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
                         const content = this.notebookContent;       
                         const variables = this.notebookVariables;                                         
                         this.sendMessage({
-                            type: "NOTEBOOK_SET_INIT_DATA", payload: {content: content, variables: variables}
+                            type: "NOTEBOOK_SET_INIT_DATA", payload: {content: content, variables: variables, editMode: this.notebookEditMode}
                         });
                     } else {                        
                         this.notebookContent = msg.payload.content;

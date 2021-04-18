@@ -6,6 +6,7 @@ export declare type StarboardNotebookIFrameOptions<ReceivedMessageType = Outboun
     notebookContent?: string;
     notebookContainer?: object;
     notebookVariables?: any;
+    notebookEditMode?: string;
     onNotebookReadySignalMessage(payload: ReadySignalMessage['payload']): void;
     onSaveMessage(payload: SaveMessage['payload']): void;
     onContentUpdateMessage(payload: ContentUpdateMessage['payload']): void;
@@ -20,6 +21,7 @@ export declare class StarboardNotebookIFrame extends HTMLIFrameElement {
     private options?;
     private constructorOptions;
     private notebookVariables?;
+    private notebookEditMode;
     private _notebookContent;
     get notebookContent(): string;
     set notebookContent(content: string);

@@ -2021,12 +2021,14 @@ var starboardWrap = (function (exports) {
           onMessage: (_l = opts.onMessage) !== null && _l !== void 0 ? _l : function () { },
           notebookContent: opts.notebookContent,
           notebookContainer: opts.notebookContainer,
-          notebookVariables: opts.notebookVariables
+          notebookVariables: opts.notebookVariables,
+          notebookEditMode: opts.notebookEditMode || "edit"
       };
   }
   class StarboardNotebookIFrame extends HTMLIFrameElement {
       constructor(opts = {}) {
           super();
+          this.notebookEditMode = "edit";
           // The version of starboard-wrap
           this.version = "0.2.3";
           this._notebookContent = "";
@@ -2046,6 +2048,7 @@ var starboardWrap = (function (exports) {
           this.frameBorder = "0";
           this.notebookContent = this.options.notebookContent || "";
           this.notebookVariables = this.options.notebookVariables || {};
+          this.notebookEditMode = this.options.notebookEditMode || "edit";
           iframeResizer({
               autoResize: this.options.autoResize,
               inPageLinks: this.options.inPageLinks,
@@ -2058,7 +2061,7 @@ var starboardWrap = (function (exports) {
                           const content = this.notebookContent;
                           const variables = this.notebookVariables;
                           this.sendMessage({
-                              type: "NOTEBOOK_SET_INIT_DATA", payload: { content: content, variables: variables }
+                              type: "NOTEBOOK_SET_INIT_DATA", payload: { content: content, variables: variables, editMode: this.notebookEditMode }
                           });
                       }
                       else {
