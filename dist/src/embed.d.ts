@@ -3,6 +3,7 @@ export declare type StarboardNotebookIFrameOptions<ReceivedMessageType = Outboun
     src: string;
     autoResize: boolean;
     inPageLinks: boolean;
+    heightCalculationMethod: string;
     notebookContent?: string;
     notebookContainer?: object;
     notebookVariables?: any;

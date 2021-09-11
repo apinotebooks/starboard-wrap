@@ -12,6 +12,7 @@ export type StarboardNotebookIFrameOptions<ReceivedMessageType = OutboundNoteboo
 
     autoResize: boolean;
     inPageLinks: boolean;
+    heightCalculationMethod: string;
 
     notebookContent?: string;
     notebookContainer?: object;
@@ -37,6 +38,7 @@ function loadDefaultSettings(opts: Partial<StarboardNotebookIFrameOptions>, el: 
         src: opts.src ?? el.getAttribute("src") ?? "starboard-notebook-iframe-src-not-set",
         autoResize: opts.autoResize ?? true,
         inPageLinks: opts.inPageLinks ?? true,
+        heightCalculationMethod: opts.heightCalculationMethod ?? "taggedElement",
         sandbox: opts.sandbox ?? el.getAttribute("sandbox") ?? "allow-scripts allow-modals allow-same-origin allow-pointer-lock allow-top-navigation-by-user-activation allow-forms allow-downloads",
         debug: opts.debug ?? false,
         onNotebookReadySignalMessage: opts.onNotebookReadySignalMessage ?? function(){},
@@ -80,6 +82,8 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
 
     connectedCallback() {
         this.options = loadDefaultSettings(this.constructorOptions, this);
+        console.log(this.options);
+
         const checkOrigin = [new URL(this.options.src).origin];
 
         this.sandbox.value = this.options.sandbox;
@@ -92,6 +96,7 @@ export class StarboardNotebookIFrame extends HTMLIFrameElement {
         iFrameResizer({
             autoResize: this.options.autoResize, 
             inPageLinks: this.options.inPageLinks,
+            heightCalculationMethod: this.options.heightCalculationMethod,
             checkOrigin: checkOrigin,
             log: this.options.debug,
             onMessage: async (data: {iframe: any, message: OutboundNotebookMessage}) => {
